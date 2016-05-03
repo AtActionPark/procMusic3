@@ -14,9 +14,15 @@
 //60-4-32-0-28.44209-4Q-2Bi
 //60-4-32-0-90.11622-0-0
 //60-4-32-0-25.05833-0-0-1
-//60-4-32-0-13.36134-0-0-1
-
 //60-4-32-0-78.91680-0-0-1
+
+
+//60-4-32-0-13.36134-0-0-1 !
+//60-4-32-0-36.35458-0-0-1 !!
+//60-4-32-0-4.90206-0-0-1 !
+//60-4-32-0-12.02677-0-0-1 !!
+//60-4-32-0-82.87636-0-0-1 !
+
 
 
 // Parameters
@@ -133,8 +139,8 @@ $(document).ready(function(){
 
 
   meSpeak.loadConfig("config/mespeak_config.json"); 
-  meSpeak.loadVoice('voices/en/en-us.json'); 
-  //meSpeak.loadVoice('voices/fr.json');
+  //meSpeak.loadVoice('voices/en/en-us.json'); 
+  meSpeak.loadVoice('voices/fr.json');
 
   $('#loading').empty()
   
