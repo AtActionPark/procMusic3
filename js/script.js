@@ -17,11 +17,19 @@
 //60-4-32-0-78.91680-0-0-1
 
 
-//60-4-32-0-13.36134-0-0-1 !
 //60-4-32-0-36.35458-0-0-1 !!
-//60-4-32-0-4.90206-0-0-1 !
-//60-4-32-0-12.02677-0-0-1 !!
-//60-4-32-0-82.87636-0-0-1 !
+//60-4-32-0-4.90206-0-0-1 !!!
+//60-4-32-0-12.02677-0-0-1 !!!
+
+
+
+
+//60-4-32-0-58.06153-0-0-1
+//60-4-32-0-40.93405-0-0-1 !!
+
+//60-4-32-0-46.90390-nfPH04-5fR-1
+//60-4-32-0-46.90390-0-0-1
+//60-4-32-0-37.28522-0-0-1
 
 
 
@@ -494,7 +502,12 @@ function randomSong(){
 
   if(voice){
     phrase = make_post(min_words)
+    $('#phrase').html(phrase)
     phraseSplit = phrase.split(' ')
+    console.log(phraseSplit)
+    if(phraseSplit.length >32)
+    phraseSplit = phraseSplit.slice(0,31)
+    console.log(phraseSplit)
 
     var voiceInstr = randomInstrument()
     var pitch = getRandomFloat(0,1)
@@ -504,7 +517,7 @@ function randomSong(){
       scaleVoice = extendScale(scale,4,5)
 
     var sequenceVoice = randomSequence(scaleVoice,baseLength)
-    sequenceVoice = generateSequence(scaleVoice,baseLength,0.5,1,-0.6,false,true)
+    sequenceVoice = generateSequence(scaleVoice,baseLength,0.5,1,0,false,true)
 
     var commandVoice = new Command(null,sequenceVoice,'Voice',scaleVoice)
     commandList.push(commandVoice)
@@ -674,8 +687,17 @@ function generateSequence(scale,length,density,coherence,durationSkew,chord,voic
       // duration in number of steps
       // duration factor codes for the max duration of a note
       var duration = pickRandomArray(skewDuration(durationSkew))*resolution*durationFactor
-      if(voice)
+      //if this is a vocoder sequence:
+      if(voice){
+        //maek sure that we dont have too short notes
         duration = Math.max(duration,2)
+
+        
+        //var wordLengthInChar = phraseSplit[i]
+        //console.log(wordLengthInChar)
+      }
+
+
       //lazy check
       if (duration<1)
         duration = 1
@@ -959,7 +981,8 @@ function sing(text,note,duration){
   var speed = Math.min(150/duration,200);
   speed = 50
   
-  var buffer = meSpeak.speak(text,{variant:'m2',pitch:pitch,speed:speed,ssml:true,rawdata:'default'});
+  var buffer = meSpeak.speak(longify(text,duration),{variant:'m2',pitch:pitch,speed:speed,ssml:true,rawdata:'default'});
+  //var buffer = meSpeak.speak(text,{variant:'m2',pitch:pitch,speed:speed,ssml:true,rawdata:'default'});
   playSound(buffer,note)
 }
 
@@ -973,6 +996,127 @@ function playSound(streamBuffer, note) {
 function initVocoder(){
   vocoder = new Vocoder()
   vocoder.init(context)
+}
+
+function longify(word,duration){
+  var repeat = '';
+  var r = 3
+  word = word.replace(/\./g,' ')
+  if(word.slice(-1) == 'a'){
+    repeat = 'a'
+    for(var i = 0;i<r*duration;i++)
+      repeat += 'a'
+  }
+
+  else if(word.slice(-1) == 'i'){
+    if(word.slice(-2) == 'a'){
+      repeat = 'é'
+      for(var i = 0;i<r*duration;i++)
+      repeat += 'é'
+    }
+    else{
+      repeat = 'i'
+      for(var i = 0;i<r*duration;i++)
+      repeat += 'i'
+    }
+  }
+
+  else if(word.slice(-1) == 'o'){
+    repeat = 'o'
+    for(var i = 0;i<r*duration;i++)
+      repeat += 'o'
+  }
+
+  else if(word.slice(-1) == 'u'){
+    if(word.slice(-2) == 'a'){
+      repeat = 'o'
+      for(var i = 0;i<r*duration;i++)
+      repeat += 'o'
+    }
+    else{
+      repeat = 'u'
+      for(var i = 0;i<r*duration;i++)
+      repeat += 'u'
+    }
+  }
+
+  else if(word.slice(-1) == 'é'){
+    repeat = 'é'
+    for(var i = 0;i<r*duration;i++)
+      repeat += 'é'
+  }
+  else if(word.slice(-1) == 'à'){
+    repeat = 'a'
+    for(var i = 0;i<r*duration;i++)
+      repeat += 'a'
+  }
+
+  else if(word.slice(-1) == 'r'){
+    if(word.slice(-2)=='e'){
+      repeat = 'a'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'a'
+    }
+  }
+
+  else if(word.slice(-1) == 's'){
+    if(word.slice(-2)=='a'){
+      repeat = 'a'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'a'
+    }
+    else if(word.slice(-2)=='i'){
+      repeat = 'i'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'i'
+    }
+    else if(word.slice(-2)=='o'){
+      repeat = 'o'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'o'
+    }
+    else if(word.slice(-2)=='u'){
+      repeat = 'u'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'u'
+    }
+    else if(word.slice(-1) == 'é'){
+      repeat = 'é'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'é'
+    }
+  }
+
+  else if(word.slice(-1) == 't'){
+    if(word.slice(-2)=='a'){
+      repeat = 'a'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'a'
+    }
+    else if(word.slice(-2)=='i'){
+      repeat = 'i'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'i'
+    }
+    else if(word.slice(-2)=='o'){
+      repeat = 'o'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'o'
+    }
+    else if(word.slice(-2)=='u'){
+      repeat = 'u'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'u'
+    }
+    else if(word.slice(-1) == 'é'){
+      repeat = 'é'
+      for(var i = 0;i<r*duration;i++)
+        repeat += 'é'
+    }
+  }
+
+  console.log(word + ' ' + repeat)
+  return word + ' ' + repeat;
 }
 
 
